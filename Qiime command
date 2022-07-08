@@ -1,0 +1,51 @@
+qiime tools import \
+  --type 'SampleData[PairedEndSequencesWithQuality]' \
+  --input-path rawdata \
+  --input-format CasavaOneEightSingleLanePerSampleDirFmt \
+  --output-path demux-paired-end.qza
+
+qiime demux summarize \
+  --i-data demux-paired-end.qza \
+  --o-visualization demux-paired-end.qzv
+
+qiime dada2 denoise-paired \
+  --i-demultiplexed-seqs demux-paired-end.qza \
+  --p-trim-left-f 15 \
+  --p-trim-left-r 15 \
+  --p-trunc-len-f 153 \
+  --p-trunc-len-r 153 \
+  --o-table table.qza \
+  --p-min-fold-parent-over-abundance 2.0 \
+  --p-n-threads 0 \
+  --o-representative-sequences rep-seqs.qza \
+  --o-denoising-stats denoising-stats.qza
+
+qiime feature-table summarize \
+  --i-table table.qza \
+  --o-visualization table.qzv \
+  --m-sample-metadata-file ../metadata.txt
+
+qiime feature-table tabulate-seqs \
+  --i-data rep-seqs.qza \
+  --o-visualization rep-seqs.qzv
+  
+qiime metadata tabulate \
+  --m-input-file denoising-stats.qza \
+  --o-visualization denoising-stats.qzv
+  
+qiime phylogeny align-to-tree-mafft-fasttree \
+  --i-sequences rep-seqs.qza \
+  --o-alignment aligned-rep-seqs.qza \
+  --o-masked-alignment masked-aligned-rep-seqs.qza \
+  --o-tree unrooted-tree.qza \
+  --o-rooted-tree rooted-tree.qza
+  
+qiime feature-classifier classify-sklearn \
+  --i-classifier references/silva-138-99-515-806-nb-classifier.qza \
+  --i-reads rep-seqs.qza  \
+  --o-classification taxonomy_silva.qza
+  
+qiime metadata tabulate \
+  --m-input-file taxonomy_silva.qza \
+  --o-visualization taxonomy_silva.qzv
+
