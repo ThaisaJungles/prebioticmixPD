@@ -4,4 +4,4 @@ Qiime2 script of 16S rRNA data analysis from in vitro fecal fermentation studies
 
 16S rRNA sequencing data and metadata can be accessed on NCBI SRA PRJNA852512.   
 
-Qiime outputs (metadata, ASV table, and taxonomy table) were uploaded to MicrobiomeAnalyst (https://microbiomeanalyst.ca/) for clustered heatmap processing and vizualization. 
+Qiime outputs (ASV table, and taxonomy table) and metadata were uploaded to MicrobiomeAnalyst (https://microbiomeanalyst.ca/) for clustered heatmap processing and vizualization. 
